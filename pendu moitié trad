@@ -1,0 +1,208 @@
+from turtle import *
+import tkinter as tk
+from random import *
+import sys 
+
+#programme dessin de shama à ajt
+
+
+#listes des mots du niveau facile
+dic_f={
+    "maison":"habitat pour les humains",
+    "amour":"sentiment souvent représenté par un symbole",
+    "danse":"sport qui s'accompagne souvent de musique",
+    "sable":"ce qui tapisse le sol des lieux de vacances",
+    "valse":"danse caractérisée par un mouvement de rotation",
+    "avion": "permet de voyager dans le ciel",
+    "olive":"fruit méditérranéen des apérots",
+    "fusée":"voyage dans l'espace",
+    "zumba":"jeu créer en 2001 inspiré de danses latines",
+    "droit":"on a le côté gauche et le côté...",
+    "Japon":"pays qui a capitulé après la WW2",
+    "soleil":"qui éclaire la terre",
+    "tortue":"animal à carapace",
+    "puzzle":"jeu d'assemblage calme",
+    "bateau":"permet de voyager sur les eaux",
+    "cactus":"plante que l'on trouve dans les zones désertiques",
+    "Canada":"pays de l'érable",
+    "Italie":"pays méditerranéen",
+    "gauche":"on a le côté droit et le côté...",
+    "saisons":"les 4 cycles de la nature",
+    "Eglise":"lieu religieux",
+    "auteur":"à l'origine d'un livre, projet",
+    "montre":"sert à lire l'heure",
+    "banquise":"grande étendue de glace",
+    "cartable":"sac utilisé pour l'école",
+    "dessert":"plat sucré mangé à la fin du repas",
+    "tornade":"vent très violent",
+    "village":"petit groupe de maisons",
+    "Pologne":"pays à  la frontière de l'Allemagne",
+    "juillet":"mois de l'été",
+    "Afrique":"continent riche en cultures, faunes et flores",
+    "Espagne":"pays proche du Maroc",
+    "voiture":"sert à se déplacer",
+    "horloge":"lire l'heure",
+    "aventure":"histoire avec des événements imprévus",
+    "boussole":"objet qui aide à se repérer",
+    "telescope":"instrument pour observer les objets lointains",
+    "grenouille":"animal qui saute et nage",
+    "pyramide":"grand monument de forme triangulaire",
+    "capitale":"ville principale d'un pays",
+    "Belgique":"pays des frites",
+    "Maldives":"Archipel paradisiaque",}
+
+#liste de mots du niveau moyen 
+dic_m={
+    "Aigle":"oiseau prestigieux",
+    "Gifle":"frapper quelqu'un à un endroit précis",
+    "Radis":"légume bicolore",
+    "Ananas":"fruit exotique",
+    "Tétine":"objet particulièrement affectioné par les bébés",
+    "Hurler":"action qui signale un danger ou une douleur",
+    "Séisme":"onde terrestre",
+    "casino":"jeux d'argent",
+    "Losange":"forme géométrique à 4 côtés",
+    "Scooter":"2 roues",
+    "Journal":"moyen de s'informer avant la télé ", 
+    "Corbeau":"à vos risques et périls si vous lui faites mal",
+    "Brocante":"endroit pour vendre et faire de la place dans ses placards", 
+    "Diapason":"instrument de résonnance utilisé en physique",
+    "Archipel":"Indonésie ou Japon ou l'ensemble des îles océaniques",
+    "Symptôme":"ensemble de signes qui alertent sur une situation ou indique que quelque chose arrive"}
+
+#liste de mots du niveau difficile
+dic_d={
+    "Klaxon":"bruit interdit la nuit et en ville", 
+    "Sable":"rappelle l'été", 
+    "Trêve":"pause particulière", 
+    "Fable":"courtes histoires", 
+    "Capot":"élément important d'une voiture",
+    "Quartz":"pierre à couleur douce utilisée dans les bijoux",
+    "Sphinx":"animal mythique", "Acajou":"couleur spécifique du marron ou bois tropical", 
+    "Zipper":"action de fermer quelque chose comme une veste",
+    "Dentier":"quand on a plus de dents on en met",
+    "Ukulélé":"instrument qui ressemble au violon",
+    "Zozoter":"quand on arrive pas à bien prononcer des lettres spécifiques",
+    "Trousseau":"généralement utiliser pour les clés",
+    "Brouette":"objet à roues utile pour transporter des objets",
+    "Fracture":"Rupture d'une ligne ou élément; utilisé en milieu médical",
+    "Alchimie":"ce qu'on appelle de science et qui a 2 but principaux"}
+
+#set des données de départ
+erreurs_max={
+    "facile":8,
+    "moyen":5,
+    "difficile":2}
+nb_erreurs_max =None
+mot_a_deviner=None
+trouvés = []
+poubelle = []
+nb_erreurs=0
+length=None
+difficulte=None
+
+
+#création de la fenêtre de fin (rejouer ou quitter) avec callbacks
+def rejouer():
+    resetscreen()
+    jeu()
+
+def quitter():
+    sys.exit(0)
+
+def fenetre_fin():
+    fin = tk.Tk()
+    fin.title("Partie terminée")
+    fin.geometry("600x300")
+    txt_fin= tk.Label(fin, text="Souhaitez-vous rejouer ?")
+    txt_fin.pack(pady=10)
+    bouton_rejouer = tk.Button(fin, text="Oui", command=lambda: [fin.destroy(), rejouer()])
+    bouton_rejouer.pack(pady=5)
+    bouton_quitter = tk.Button(fin, text="Non", command=lambda: [fin.destroy(), quitter()])
+    bouton_quitter.pack(pady=5)
+    fin.mainloop()
+
+ 
+def jeu():
+    depart=tk.Tk()
+    depart.title("Choix des paramètres de la partie")
+    depart.geometry("600x400")
+    txt_depart=tk.label(depart,text="Choisissez la longueur du mot")
+    txt_depart.pack(pady=10)
+    options1=["5","6","7","8"]
+    var1=tk.StringVar(depart)
+    menu1=tk.OptionMenu(depart,var1,*options1)
+    menu1.pack(pady=10)
+
+    txt_depart2=tk.label(depart,text="Choisissez le niveau du jeu")
+    txt_depart2.pack(pady=20)
+    options2=["facile","moyen","difficile"]
+    var2=tk.StringVar(depart)
+    menu2=tk.OptionMenu(depart,var2,*options2)
+    menu2.pack(pady=20)
+
+    valider=tk.Button(depart,text="Valider",command=depart.destroy())
+    niveau=var2.get()
+    length=var1.get()
+      
+    if niveau=="facile":
+        erreurs= [error1,error2,error3,error4,error5,error6,error7,error8]
+        nb_erreurs_max= 8
+        while len(mot_a_deviner)!=length:
+            mot_a_deviner = random.choice(list(dic_f.keys()))
+        ind=dic_f[mot_a_deviner]
+        mots=mot_a_deviner.lower()
+    elif niveau == "moyen":
+        nb_erreurs_max=5
+        erreurs = [error1_m, error2_m, error3_m, error4_m, error5_m]
+        while len(mot_a_deviner)!=length:
+            mot_a_deviner = random.choice(list(dic_m.keys()))
+        ind=dic_m[mot_a_deviner]
+        mots=mot_a_deviner.lower()
+    else:
+        nb_erreurs_max=2
+        erreurs = [error1_d, error2_d]
+        while len(mot_a_deviner)!=length:
+            mot_a_deviner = random.choice(list(dic_d.keys()))
+        ind=dic_d[mot_a_deviner]
+        mots=mot_a_deviner.lower()
+
+#code de l'interface visuelle du jeu
+    for i in range(len(mots)):
+        trouvés.append("*")
+
+    fenetre_jeu=tk.Tk()
+    fenetre_jeu.title("Jeu du pendu :)")
+    fenetre_jeu.geometry("1000x1000")
+
+    interface=tk.Canvas(fenetre_jeu,width=1000,height=1000)
+
+    while trouvés!=list(mots) and nb_erreurs<nb_erreurs_max:
+        affiche="".join(trouvés)
+        interface.create_text(500,900,text=affiche)
+
+        #petite fenetre a faire avec possibilité d'entrer les lettres de l'alphabet et un bouton "aide"
+        #commande du bouton "aide":écrit l'indice sur le caneva, en dessous du mot a trouver
+        #recuperation de la lettre selectionnée dans la variable "lettre" (commande get())
+        
+        if lettre in mots:
+            if lettre in trouvés or lettre in poubelle:
+                #fenetre qui affiche que la lettre avait déja été selectionnée
+            else:
+                for i, j in enumerate(mots):
+                    if j==lettre:
+                        trouvés[i]=lettre
+        else:
+            poubelle.append(lettre)
+            #dessin sur l'interface de l'erreur correspondante
+            nb_erreurs += 1
+
+    if trouvés == list(mots):
+        #effacer tout ce qui est sur l'interface et marquer en gros "G A G N E ! ! !"
+    
+    if nb_erreurs == nb_erreurs_max:
+       #laisser le dessin final du pendu et effacer tout le reste
+       #ajouter en gros "P E R D U ! ! !
+
+
+jeu()
